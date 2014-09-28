@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="WEB-INF/lib/d3.js"></script>
+<script src="WEB-INF/lib/d3.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+var ss;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.category10();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+//alert(2212);
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) { return x(d.name); })
+    .y(function(d) { return y(d.value); });
+//alert(11);
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+//alert(12);
+d3.csv("TotalVisitsA1.csv", function(error, data) {
+  var ageNames = d3.keys(data[0]).filter(function(key) { return key !== "Year"; });
+//alert(0); 
+  data.forEach(function(d) {
+	 
+    d.ages = ageNames.map(function(name) {/*alert(name);*/ return {name: name, value: +d[name]}; });
+	alert(data.Year);
+	d.acc = data.Year;
+  });
+
+//  var cities = color.domain().map(function(name) {
+//    return {
+//      name: name,
+//      values: data.map(function(d) {
+//        return {date: d.date, temperature: +d[name]};
+//      })
+//    };
+//  });
+//alert(1);
+  x.domain(data.map(function(d) { return d.ages.name; }));
+  y.domain([d3.min(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); }), d3.max(data, function(d) { return d3.max(d.ages, function(d) { return d.value; }); })]);
+
+ // y.domain([
+//    d3.min(cities, function(c) { return d3.min(c.values, function(v) { return v.temperature; }); }),
+//    d3.max(cities, function(c) { return d3.max(c.values, function(v) { return v.temperature; }); })
+//  ]);
+//alert(2);
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+//alert(3);
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Population");
+//alert(4);
+  var city = svg.selectAll(".city")
+      .data(data)
+    .enter().append("g")
+      .attr("class", "city");
+//alert(data); 
+//.data(function(d) { return d.ages; })
+  city.append("path")      
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.ages); })
+      .style("stroke", function(d) {/*alert(data);*/ return color(); });
+//alert(6);
+  city.append("text")
+      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+      .attr("transform", function(d) { return "translate(" + x(d.ages.name) + "," + y(d.ages.value) + ")"; })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+alert(7);
+});
+
+</script>

@@ -6,9 +6,17 @@ app.controller('NotesController', function(){
 	this.products=notes;
 });
 
-app.controller('mycontroller', function($scope) {
-	this.products=notes;
+app.controller('addNote', function(){
+	this.newnote = {};
 	
+	this.addnewnote = function(anewnote){
+		anewnote.text.push(this.newnote);
+		this.newnote = {};
+	};
+});
+
+app.controller('myController', function($scope) {
+	this.products=notes;
     $scope.message = "";
     $scope.left  = function() {return 100 - $scope.message.length;};
     $scope.clear = function() {$scope.message = "";};
@@ -16,11 +24,11 @@ app.controller('mycontroller', function($scope) {
 });
 
 var notes = [{
-		note: "Test1."
+		note: [{text: "Today"}]
 	},{
-		note: "Test2."
+		note: [{text:"Tomorrow"}]
 	},{
-		note: "Test3."
+		note: [{text:"The day after tomorrow"}]
 	}
 ];
 

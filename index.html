@@ -5,27 +5,27 @@
     <script type="text/javascript" src="js/angular.min.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
   </head>
-  <body>
+  <body ng-controller="NotesController as nts">
   
-  <div ng-controller="myController as nts">
-    <h1>Note</h1>
-    <p><textarea ng-model="message" cols="40" rows="10"></textarea></p>
-    
-    <p>
-	<button ng_click="save()">Save</button>
-	<button ng-click="clear()">Clear</button>
-	</p>
+  	<div class="list-group" ng-repeat="product in nts.products">
+    	<div class="list-group-item" ng-repeat="note in product.note">
+        	<blockquote>{{note.text}}</blockquote>
+           
+        <form name="mynote" ng-controller="addNote as add" ng-submit="add.addnewnote(product)">
+        <div>
+        	<blockquote>{{add.product.note}}</blockquote>
+        </div>
+            
+            <h3>New Note</h3>
+            <fieldset class="form-group">
+            	<textarea ng-model="add.product.note" class="form-control" placeholder="add your note here"></textarea>
+            </fieldset>
+            <fieldset class="form-group">
+            	<input type="submit" class="btn btn-primary" value="Submit your note" />
+            </fieldset>
+        </form>
+        </div>
+    </div> 
 
-	<p>Number of characters left: <span ng-bind="left()"></span></p>
-    
-    <div class="list-group">
-    <div class="list-group-item" ng-repeat="product in nts.products">
-    	{{product.note}}
-  </div>
-  </div>
-    
-  </div>
-    
-    
   </body>
 </html>
